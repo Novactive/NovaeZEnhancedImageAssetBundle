@@ -3,3 +3,16 @@ services:
         autowire: true
         autoconfigure: true
         public: false
+
+    Novactive\EzEnhancedImageAssetBundle\Imagine\Filter\Loader\FocusFilterLoader:
+        tags:
+            - { name: 'liip_imagine.filter.loader', loader: focus }
+
+    Novactive\EzEnhancedImageAssetBundle\Imagine\AliasGenerator:
+        decorates: ezpublish.image_alias.imagine.alias_generator
+        arguments:
+            - "@ezpublish.image_alias.imagine.binary_loader"
+            - "@liip_imagine.filter.manager"
+            - "@ezpublish.image_alias.imagine.cache_resolver"
+            - "@liip_imagine.filter.configuration"
+            - "@?logger"
