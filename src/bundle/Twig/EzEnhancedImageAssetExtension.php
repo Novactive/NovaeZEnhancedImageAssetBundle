@@ -7,7 +7,6 @@
 namespace AppBundle\Twig;
 
 use eZ\Publish\API\Repository\Exceptions\InvalidVariationException;
-use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\Field;
 use eZ\Publish\API\Repository\Values\Content\VersionInfo;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
@@ -29,7 +28,7 @@ class EzEnhancedImageAssetExtension extends Twig_Extension
     /**
      * EzEnhancedImageAssetExtension constructor.
      *
-     * @param VariationHandler   $imageVariationService
+     * @param VariationHandler $imageVariationService
      */
     public function __construct(VariationHandler $imageVariationService)
     {
@@ -65,7 +64,7 @@ class EzEnhancedImageAssetExtension extends Twig_Extension
      *
      * @return \eZ\Publish\SPI\Variation\Values\Variation|null
      */
-    public function getImageFocusVariation(Field $field, VersionInfo $versionInfo, $variationName, array $focusPoint = array())
+    public function getImageFocusVariation(Field $field, VersionInfo $versionInfo, $variationName, array $focusPoint = [])
     {
         try {
             return $this->imageVariationService->getVariation($field, $versionInfo, $variationName, $focusPoint);

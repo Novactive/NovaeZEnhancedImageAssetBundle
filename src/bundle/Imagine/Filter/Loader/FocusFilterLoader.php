@@ -13,6 +13,7 @@ namespace Novactive\EzEnhancedImageAssetBundle\Imagine\Filter\Loader;
 
 use Imagine\Filter\Basic\Crop;
 use Imagine\Image\Box;
+use Imagine\Image\BoxInterface;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;
 use Liip\ImagineBundle\Imagine\Filter\Loader\LoaderInterface;
@@ -24,20 +25,34 @@ class FocusFilterLoader implements LoaderInterface
      */
     public function load(ImageInterface $image, array $options = [])
     {
+        $originalBox       = $image->getSize();
+        $cropBox           = $this->getCropBox($options, $originalBox);
+        $xCropStart        = $this->getFocusPos($originalBox->getWidth(), $cropBox->getWidth(), $options['pos'][0]);
+        $yCropStart        = $this->getFocusPos($originalBox->getHeight(), $cropBox->getHeight(), $options['pos'][1], true);
 
-        if (!empty($options['filter'])) {
-            $filter = constant('Imagine\Image\ImageInterface::FILTER_'.mb_strtoupper($options['filter']));
-        }
-        if (empty($filter)) {
-            $filter = ImageInterface::FILTER_UNDEFINED;
+        if (($originalBox->getWidth() > $cropBox->getWidth() || $originalBox->getHeight() > $cropBox->getHeight())
+            || (!empty($options['allow_upscale']) && ($originalBox->getWidth() !== $cropBox->getWidth() || $originalBox->getHeight() !== $cropBox->getHeight()))
+        ) {
+            $filter = new Crop(new Point($xCropStart, $yCropStart), $cropBox);
+            $image  = $filter->apply($image);
         }
 
+        return $image;
+    }
+
+    /**
+     * @param $options
+     * @param BoxInterface $originalBox
+     *
+     * @return Box
+     */
+    protected function getCropBox($options, BoxInterface $originalBox)
+    {
         $width  = isset($options['size'][0]) ? $options['size'][0] : null;
         $height = isset($options['size'][1]) ? $options['size'][1] : null;
 
-        $size       = $image->getSize();
-        $origWidth  = $size->getWidth();
-        $origHeight = $size->getHeight();
+        $origWidth  = $originalBox->getWidth();
+        $origHeight = $originalBox->getHeight();
 
         if (null === $width || null === $height) {
             if (null === $height) {
@@ -47,22 +62,10 @@ class FocusFilterLoader implements LoaderInterface
             }
         }
 
-        $width = $width > $origWidth ? $origWidth : $width;
+        $width  = $width > $origWidth ? $origWidth : $width;
         $height = $height > $origHeight ? $origHeight : $height;
 
-        $x = $this->getFocusPos($origWidth, $width, $options["pos"][0]);
-        $y = $this->getFocusPos($origHeight, $height, $options["pos"][1], true);
-
-        if (($origWidth > $width || $origHeight > $height)
-            || (!empty($options['allow_upscale']) && ($origWidth !== $width || $origHeight !== $height))
-        ) {
-
-            $filter = new Crop(new Point($x, $y), new Box($width, $height));
-            //$filter = new Thumbnail(new Box($width, $height), $mode, $filter);
-            $image  = $filter->apply($image);
-        }
-
-        return $image;
+        return new Box($width, $height);
     }
 
     /**
@@ -70,22 +73,21 @@ class FocusFilterLoader implements LoaderInterface
      * @param $cropedSize
      * @param $pos
      * @param bool $negative
+     *
      * @return float|int
      */
-    private function getFocusPos($originalSize, $cropedSize, $pos, $negative = false)
+    private function getFocusPos($originalSize, $croppedSize, $pos, $negative = false)
     {
-        $percent = $negative ? ((-$pos + 1) / 2) * 100 : (($pos + 1) / 2) * 100 ;
-        $focus   = ($originalSize * $percent) / 100;
-        $nval    = $focus - ($cropedSize / 2);
+        $percent         = $negative ? ((-$pos + 1) / 2) * 100 : (($pos + 1) / 2) * 100;
+        $focusPointVal   = ($originalSize * $percent) / 100;
+        $cropPointVal    = $focusPointVal - ($croppedSize / 2);
 
-        if ($nval < 0) {
+        if ($cropPointVal < 0) {
             $val = 0;
-        }
-        elseif ($nval > ($originalSize - ($cropedSize / 2))) {
-            $val = $originalSize - $cropedSize;
-        }
-        else {
-            $val = $nval;
+        } elseif ($cropPointVal > ($originalSize - ($croppedSize / 2))) {
+            $val = $originalSize - $croppedSize;
+        } else {
+            $val = $cropPointVal;
         }
 
         return $val;
