@@ -56,6 +56,13 @@ class EzEnhancedImageAssetExtension extends Twig_Extension
 
     /**
      * Returns the image variation object for $field/$versionInfo.
+     * $focusPoint = [
+     *      'filters' => [
+     *          'focus' => [
+     *              'pos' => [$posX, $posY],
+     *          ],
+     *      ],
+     * ]
      *
      * @param \eZ\Publish\API\Repository\Values\Content\Field       $field
      * @param \eZ\Publish\API\Repository\Values\Content\VersionInfo $versionInfo
