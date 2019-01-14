@@ -84,7 +84,7 @@ class FocusFilterLoader implements LoaderInterface
 
         if ($cropPointVal < 0) {
             $val = 0;
-        } elseif ($cropPointVal > ($originalSize - ($croppedSize / 2))) {
+        } elseif ($cropPointVal > ($originalSize - $croppedSize)) {
             $val = $originalSize - $croppedSize;
         } else {
             $val = $cropPointVal;
