@@ -70,7 +70,7 @@ class FocusFilterLoader implements LoaderInterface
 
     /**
      * @param $originalSize
-     * @param $cropedSize
+     * @param $croppedSize
      * @param $pos
      * @param bool $negative
      *

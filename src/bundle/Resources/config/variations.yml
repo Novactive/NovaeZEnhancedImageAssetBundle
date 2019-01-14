@@ -1,0 +1,8 @@
+#ezpublish:
+#    system:
+#        site_group:
+#            image_variations:
+#                focus_point:
+#                    reference: null
+#                    filters:
+#                        - { name: focus, params: {size: [500, 500], pos: [0, 0]} }
