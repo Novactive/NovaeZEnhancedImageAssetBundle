@@ -16,3 +16,6 @@ services:
             - "@ezpublish.image_alias.imagine.cache_resolver"
             - "@liip_imagine.filter.configuration"
             - "@?logger"
+
+    Novactive\EzEnhancedImageAssetBundle\Service\FocusPointService:
+        public: true

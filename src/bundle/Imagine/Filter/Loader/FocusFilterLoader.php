@@ -17,9 +17,22 @@ use Imagine\Image\BoxInterface;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;
 use Liip\ImagineBundle\Imagine\Filter\Loader\LoaderInterface;
+use Novactive\EzEnhancedImageAssetBundle\Service\FocusPointService;
 
 class FocusFilterLoader implements LoaderInterface
 {
+    /** @var FocusPointService */
+    protected $focusPointService;
+
+    /**
+     * @param FocusPointService $focusPointService
+     * @required
+     */
+    public function setFocusPointService(FocusPointService $focusPointService): void
+    {
+        $this->focusPointService = $focusPointService;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -76,13 +89,12 @@ class FocusFilterLoader implements LoaderInterface
      *
      * @return float|int
      */
-    private function getFocusPos($originalSize, $croppedSize, $pos, $negative = false)
+    public function getFocusPos($originalSize, $croppedSize, $pos, $negative = false)
     {
-        $percent         = $negative ? ((-$pos + 1) / 2) * 100 : (($pos + 1) / 2) * 100;
-        $focusPointVal   = ($originalSize * $percent) / 100;
-        $cropPointVal    = $focusPointVal - ($croppedSize / 2);
+        $focusPointVal  = $this->focusPointService->getPixelFocusPointVal($originalSize, $pos, $negative);
+        $cropPointVal   = $this->focusPointService->getPosCropVal($focusPointVal, $croppedSize);
 
-        if ($cropPointVal < 0) {
+        if ($cropPointVal <= 0) {
             $val = 0;
         } elseif ($cropPointVal > ($originalSize - $croppedSize)) {
             $val = $originalSize - $croppedSize;
