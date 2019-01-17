@@ -39,9 +39,10 @@ class FocusFilterLoader implements LoaderInterface
     public function load(ImageInterface $image, array $options = [])
     {
         $originalBox       = $image->getSize();
+
         $cropBox           = $this->getCropBox($options, $originalBox);
-        $xCropStart        = $this->getFocusPos($originalBox->getWidth(), $cropBox->getWidth(), $options['pos'][0]);
-        $yCropStart        = $this->getFocusPos($originalBox->getHeight(), $cropBox->getHeight(), $options['pos'][1], true);
+        $xCropStart        = $this->getCropPos($originalBox->getWidth(), $cropBox->getWidth(), $options['pos'][0]);
+        $yCropStart        = $this->getCropPos($originalBox->getHeight(), $cropBox->getHeight(), $options['pos'][1], true);
 
         if (($originalBox->getWidth() > $cropBox->getWidth() || $originalBox->getHeight() > $cropBox->getHeight())
             || (!empty($options['allow_upscale']) && ($originalBox->getWidth() !== $cropBox->getWidth() || $originalBox->getHeight() !== $cropBox->getHeight()))
@@ -87,21 +88,14 @@ class FocusFilterLoader implements LoaderInterface
      * @param $pos
      * @param bool $negative
      *
-     * @return float|int
+     * @return float
      */
-    public function getFocusPos($originalSize, $croppedSize, $pos, $negative = false)
+    public function getCropPos($originalSize, $croppedSize, $pos, $negative = false)
     {
-        $focusPointVal  = $this->focusPointService->getPixelFocusPointVal($originalSize, $pos, $negative);
-        $cropPointVal   = $this->focusPointService->getPosCropVal($focusPointVal, $croppedSize);
+        $focusPointVal      = $this->focusPointService->getPixelFocusPointVal($originalSize, $pos, $negative);
+        $cropPointVal       = $this->focusPointService->getPosCropVal($focusPointVal, $croppedSize);
+        $realCropPointVal   = $this->focusPointService->getRealPosCropVal($cropPointVal, $croppedSize, $originalSize);
 
-        if ($cropPointVal <= 0) {
-            $val = 0;
-        } elseif ($cropPointVal > ($originalSize - $croppedSize)) {
-            $val = $originalSize - $croppedSize;
-        } else {
-            $val = $cropPointVal;
-        }
-
-        return $val;
+        return $realCropPointVal;
     }
 }

@@ -70,22 +70,58 @@ class FocusPointService
     }
 
     /**
-     * @param $cropPointVal
      * @param $focusPointVal
+     * @param $croppedSize
+     * @param $originalSize
+     *
+     * @return float
+     */
+    public function getRealPosCropVal($focusPointVal, $croppedSize, $originalSize)
+    {
+        if ($focusPointVal <= 0) {
+            $posVal = 0;
+        } elseif (($focusPointVal + $croppedSize) > $originalSize) {
+            $posVal = $focusPointVal - (($focusPointVal + $croppedSize) - $originalSize);
+        } else {
+            $posVal = $focusPointVal;
+        }
+
+        return $posVal;
+    }
+
+    /**
+     * @param $focusPoint
+     * @param ImageVariation $cropped
+     * @param ImageVariation $original
+     *
+     * @return array
+     */
+    public function getRealPosCrop($focusPoint, ImageVariation $cropped, ImageVariation $original)
+    {
+        $realCropPointXVal  = $this->getRealPosCropVal($focusPoint[0], $cropped->width, $original->width);
+        $realCropPointYVal  = $this->getRealPosCropVal($focusPoint[1], $cropped->height, $original->height);
+
+        return [$realCropPointXVal, $realCropPointYVal];
+    }
+
+    /**
+     * @param $cropPointVal
      * @param $croppedSize
      * @param $originalSize
      *
      * @return float|int
      */
-    public function getCroppedFocusPointVal($cropPointVal, $focusPointVal, $croppedSize, $originalSize)
+    public function getCroppedFocusPointVal($cropPointVal, $croppedSize, $originalSize)
     {
-        if ($cropPointVal <= 0) {
-            $offsetPos = $cropPointVal;
+        if ($cropPointVal < 0) {
+            $croppedFocusPoint = ($croppedSize / 2) + $cropPointVal;
+        } elseif (($cropPointVal + $croppedSize) > $originalSize) {
+            $croppedFocusPoint = ($croppedSize / 2) - (($cropPointVal + $croppedSize) - $originalSize);
         } else {
-            $offsetPos = ($focusPointVal + ($croppedSize / 2)) - $originalSize;
+            $croppedFocusPoint = $croppedSize / 2;
         }
 
-        return ($croppedSize / 2) + $offsetPos;
+        return $croppedFocusPoint;
     }
 
     /**
@@ -98,8 +134,8 @@ class FocusPointService
      */
     public function getCroppedFocusPoint($cropPoint, $focusPoint, ImageVariation $cropped, ImageVariation $original)
     {
-        $croppedXFocusPoint = $this->getCroppedFocusPointVal($cropPoint[0], $focusPoint[0], $cropped->width, $original->width);
-        $croppedYFocusPoint = $this->getCroppedFocusPointVal($cropPoint[1], $focusPoint[1], $cropped->height, $original->height);
+        $croppedXFocusPoint = $this->getCroppedFocusPointVal($cropPoint[0], $cropped->width, $original->width);
+        $croppedYFocusPoint = $this->getCroppedFocusPointVal($cropPoint[1], $cropped->height, $original->height);
 
         return [$croppedXFocusPoint, $croppedYFocusPoint];
     }
