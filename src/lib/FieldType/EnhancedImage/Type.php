@@ -18,6 +18,7 @@ use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Values\ContentType\FieldDefinition;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
 use eZ\Publish\Core\FieldType\Image\Type as ImageType;
+use eZ\Publish\Core\FieldType\Image\Value as ImageValue;
 use eZ\Publish\Core\FieldType\Value as BaseValue;
 use eZ\Publish\SPI\FieldType\ValidationError;
 use eZ\Publish\SPI\FieldType\Value as SPIValue;
@@ -69,6 +70,22 @@ class Type extends ImageType
             }
 
             $inputValue = new Value($inputValue);
+        }
+
+        if ($inputValue instanceof ImageValue) {
+            return new Value(
+                [
+                    'id'              => $inputValue->id,
+                    'alternativeText' => $inputValue->alternativeText,
+                    'fileName'        => $inputValue->fileName,
+                    'fileSize'        => $inputValue->fileSize,
+                    'uri'             => $inputValue->uri,
+                    'imageId'         => $inputValue->imageId,
+                    'inputUri'        => $inputValue->inputUri,
+                    'width'           => $inputValue->width,
+                    'height'          => $inputValue->height,
+                ]
+            );
         }
 
         return $inputValue;
