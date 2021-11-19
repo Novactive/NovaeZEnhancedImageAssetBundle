@@ -128,5 +128,6 @@
     <exclude-pattern>*/legacy_files/*</exclude-pattern>
     <exclude-pattern>*/ezpublish_legacy/*</exclude-pattern>
     <exclude-pattern>*/ezpublish_legacy_unused/*</exclude-pattern>
+    <exclude-pattern>*/ConvertToImageAsset.php</exclude-pattern>
 
 </ruleset>
