@@ -84,6 +84,8 @@ class Type extends ImageType
                     'inputUri'        => $inputValue->inputUri,
                     'width'           => $inputValue->width,
                     'height'          => $inputValue->height,
+                    'focusPoint'      => $inputValue->focusPoint,
+                    'isNewFocusPoint' => $inputValue->isNewFocusPoint,
                 ]
             );
         }
