@@ -119,7 +119,7 @@ class ImageAliasGenerator implements VariationHandler
             try {
                 $originalBinary = $this->dataLoader->find($originalPath);
             } catch (NotLoadableException $e) {
-                throw new SourceImageNotFoundException($originalPath, 0, $e);
+                throw new SourceImageNotFoundException($originalPath ?? "", 0, $e);
             }
 
             $this->logger->debug(
