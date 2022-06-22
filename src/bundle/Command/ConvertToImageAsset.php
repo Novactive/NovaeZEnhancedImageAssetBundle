@@ -150,7 +150,7 @@ class ConvertToImageAsset extends Command
         $this->repository->sudo(
             function () use ($input) {
                 /** @var array $fieldIdentifiers */
-                $fieldIdentifiers = $input->getArgument('field_identifiers');
+                $fieldIdentifiers = (array) $input->getArgument('field_identifiers');
                 foreach ($fieldIdentifiers as $fieldIdentifier) {
                     [$contentTypeIdentifier, $fieldIdentifier] = explode('/', $fieldIdentifier);
 
