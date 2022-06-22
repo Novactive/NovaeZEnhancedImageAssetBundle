@@ -129,8 +129,7 @@ class ConvertToImageAsset extends Command
             ->addArgument(
                 'field_identifiers',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-                'content_type_identifier/field_identifier',
-                []
+                'content_type_identifier/field_identifier'
             );
     }
 
