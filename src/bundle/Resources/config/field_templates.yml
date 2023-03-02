@@ -6,7 +6,7 @@ system:
         fielddefinition_edit_templates:
             -
                 template: "@ibexadesign/content_type/enhanced_image_fielddefinition_edit_templates.html.twig"
-    site:
+
         field_templates:
             -
                 template: "@ibexadesign/enhanced_image_content_fields.html.twig"
