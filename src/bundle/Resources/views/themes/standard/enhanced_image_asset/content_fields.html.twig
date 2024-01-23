@@ -3,8 +3,10 @@
 {% block enhancedimage_field %}
     {% spaceless %}
         {% set lazyLoad = parameters.lazyLoad is defined ? parameters.lazyLoad : lazy_load_images %}
+        {% set alias = parameters.alias|default( 'original' ) %}
+        {% set alternativeAliasList = parameters.alternativeAlias|default( [] ) %}
         {% if not ez_is_field_empty( content, field ) %}
-            {% set imageAttrs = ez_image_attrs( field, versionInfo, parameters.alias|default( 'original' ), {
+            {% set imageAttrs = ez_image_attrs( field, versionInfo, alias, {
                 lazyLoad: lazyLoad,
                 retina: parameters.retina|default( enable_retina_variations ),
                 attrs: {
@@ -12,18 +14,18 @@
                     'alt': parameters.alternativeText|default(field.value.alternativeText)
                 }
             }) %}
-            {% set alternativeAliasList = parameters.alternativeAlias|default( [] ) %}
 
             {% set attr = attr|merge({
                 'class': (attr.class|default('') ~ ' enhancedimage--wrapper enhancedimage--focused-img--wrapper')|trim,
             }) %}
+            {% set alternativeAliasList = alternativeAliasList|merge([{'alias': alias ~ '_webp'}]) %}
             <picture {{ block( 'field_attributes' ) }}>
                 {% for alternativeAlias in alternativeAliasList %}
                     {% set alternativeImageAttrs = ez_image_attrs( field, versionInfo, alternativeAlias.alias, {
                         lazyLoad: lazyLoad,
                         retina: parameters.retina|default( enable_retina_variations ),
                         attrs: {
-                            'media': alternativeAlias.media,
+                            'media': alternativeAlias.media|default,
                             'data-name': alternativeAlias.alias,
                         }
                     }) %}
@@ -35,7 +37,7 @@
 
                 {% if lazyLoad %}
                     {% set placeholderAlias = ez_image_alias(field, versionInfo, 'placeholder') %}
-                    <img src="{{ placeholderAlias.uri }}" class="placeholder" width="{{ imageAttrs['data-width'] }}" height="{{ imageAttrs['data-height'] }}" alt=""/>
+                    <img src="{{ placeholderAlias.uri }}" class="placeholder" width="{{ imageAttrs['data-width'] }}" height="{{ imageAttrs['data-height'] }}" alt="{{ field.value.alternativeText }}"/>
                 {% endif %}
             </picture>
         {% endif %}
@@ -45,8 +47,10 @@
 {% block ezimage_field %}
     {% spaceless %}
         {% set lazyLoad = parameters.lazyLoad is defined ? parameters.lazyLoad : lazy_load_images %}
+        {% set alias = parameters.alias|default( 'original' ) %}
+        {% set alternativeAliasList = parameters.alternativeAlias|default( [] ) %}
         {% if not ez_is_field_empty( content, field ) %}
-            {% set imageAttrs = ez_image_attrs( field, versionInfo, parameters.alias|default( 'original' ), {
+            {% set imageAttrs = ez_image_attrs( field, versionInfo, alias, {
                 lazyLoad: lazyLoad,
                 retina: parameters.retina|default( enable_retina_variations ),
                 attrs: {
@@ -54,18 +58,18 @@
                     'alt': parameters.alternativeText|default(field.value.alternativeText)
                 }
             }) %}
-            {% set alternativeAliasList = parameters.alternativeAlias|default( [] ) %}
 
             {% set attr = attr|merge({
                 'class': (attr.class|default('') ~ ' enhancedimage--wrapper')|trim,
             }) %}
+            {% set alternativeAliasList = alternativeAliasList|merge([{'alias': alias ~ '_webp'}]) %}
             <picture {{ block( 'field_attributes' ) }}>
                 {% for alternativeAlias in alternativeAliasList %}
                     {% set alternativeImageAttrs = ez_image_attrs( field, versionInfo, alternativeAlias.alias, {
                         lazyLoad: lazyLoad,
                         retina: parameters.retina|default( enable_retina_variations ),
                         attrs: {
-                            'media': alternativeAlias.media,
+                            'media': alternativeAlias.media|default,
                             'data-name': alternativeAlias.alias,
                         }
                     }) %}
@@ -77,7 +81,7 @@
 
                 {% if lazyLoad %}
                     {% set placeholderAlias = ez_image_alias(field, versionInfo, 'placeholder') %}
-                    <img src="{{ placeholderAlias.uri }}" class="placeholder" width="{{ imageAttrs['data-width'] }}" height="{{ imageAttrs['data-height'] }}" alt=""/>
+                    <img src="{{ placeholderAlias.uri }}" class="placeholder" width="{{ imageAttrs['data-width'] }}" height="{{ imageAttrs['data-height'] }}" alt="{{ field.value.alternativeText }}"/>
                 {% endif %}
             </picture>
         {% endif %}
