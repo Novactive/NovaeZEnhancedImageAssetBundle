@@ -122,9 +122,9 @@ class ImageExtension extends AbstractExtension implements GlobalsInterface
      * @param       $variationName
      * @param array $parameters
      *
+     * @return array|mixed
      * @throws ReflectionException
      *
-     * @return array|mixed
      */
     public function getImageAttributes(Field $field, VersionInfo $versionInfo, $variationName, $parameters = [])
     {
@@ -155,7 +155,7 @@ class ImageExtension extends AbstractExtension implements GlobalsInterface
         }
 
         $attrs['class'] = implode(' ', $attrs['class']);
-        if(!isset($attrs["alt"]))
+        if (!isset($attrs["alt"]))
             $attrs['alt'] = $field->value->alternativeText;
 
         return $attrs;
@@ -176,16 +176,17 @@ class ImageExtension extends AbstractExtension implements GlobalsInterface
      * @param       $variationName
      * @param array $attrs
      *
+     * @return ImageVariation|FocusedVariation|null
      * @throws ReflectionException
      *
-     * @return ImageVariation|FocusedVariation|null
      */
     protected function appendDefaultVariationAttrs(
-        Field $field,
+        Field       $field,
         VersionInfo $versionInfo,
-        $variationName,
-        &$attrs = []
-    ) {
+                    $variationName,
+                    &$attrs = []
+    )
+    {
         $defaultVariation = $this->getImageVariation($field, $versionInfo, $variationName);
         if (!$defaultVariation) {
             return null;
@@ -208,9 +209,9 @@ class ImageExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Returns the image variation object for $field/$versionInfo.
      *
+     * @return ImageVariation|FocusedVariation|null
      * @throws ReflectionException
      *
-     * @return ImageVariation|FocusedVariation|null
      */
     public function getImageVariation(Field $field, VersionInfo $versionInfo, string $variationName)
     {
@@ -255,17 +256,18 @@ class ImageExtension extends AbstractExtension implements GlobalsInterface
      * @param       $variationName
      * @param array $attrs
      *
+     * @return ImageVariation|FocusedVariation|null
      * @throws ReflectionException
      *
-     * @return ImageVariation|FocusedVariation|null
      */
     protected function appendRetinaVariationAttrs(
-        Field $field,
-        VersionInfo $versionInfo,
-        $variationName,
+        Field          $field,
+        VersionInfo    $versionInfo,
+                       $variationName,
         ImageVariation $defaultVariation,
-        &$attrs = []
-    ) {
+                       &$attrs = []
+    )
+    {
         try {
             $retinaVariation = $this->getImageVariation(
                 $field,

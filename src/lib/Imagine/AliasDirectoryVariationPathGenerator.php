@@ -41,7 +41,7 @@ class AliasDirectoryVariationPathGenerator implements VariationPathGenerator
             $filter,
             $info['dirname'],
             $info['filename'],
-            empty($variationExtension) ? '' : '.'.$variationExtension
+            empty($variationExtension) ? '' : '.' . $variationExtension
         );
     }
 }
